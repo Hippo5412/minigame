@@ -1,0 +1,118 @@
+units:
+  # Proxy Spacing Variables
+  kx: U
+  ky: U
+  # Padding Variables
+  px: kx + 1
+  py: ky + 1
+points:
+  zones:
+    matrix:
+      anchor:
+        shift: [150, -150]
+      key:
+        padding: 1ky
+        spread: 1kx
+      columns:
+        outer:
+          key:
+            column_net: P9
+        pinky:
+          key:
+            column_net: P8
+        ring:
+          key:
+            column_net: P7
+        middle:
+          key:
+            column_net: P6
+        index:
+          key:
+            column_net: P5
+          rows.mod.skip: true
+        inner:
+          key:
+            column_net: P4
+            spread: 0.5kx
+          rows.mod.width: 2kx
+          rows.bottom.shift: [0.5kx]
+      rows:
+        mod:
+          row_net: P10
+        bottom:
+          row_net: P16
+        home:
+          row_net: P14
+        top:
+          row_net: P15
+        num:
+          row_net: P18
+outlines:
+  raw:
+    - what: rectangle
+      where: true
+      size: [px,py]
+    - what: rectangle
+      where: matrix_inner_mod
+      size: [2px-1,py]
+  keys:
+    - what: rectangle
+      where: true
+      size: [kx-0.5,ky-0.5]
+    - what: rectangle
+      where: matrix_inner_mod
+      size: [2kx-0.5,ky-0.5]
+  extension:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_outer_num
+          shift: [0,0.5py]
+        - ref: matrix_outer_num
+          shift: [-1.5px,0.5py]
+        - ref: matrix_outer_top
+          shift: [-1.5px,-0.5py]
+        - ref: matrix_outer_home
+          shift: [-0.5px,-0.5py]
+  board:
+    - name: raw
+    - operation: add
+      name: extension
+      fillet: 1
+  combo:
+    - name: board
+    - operation: subtract
+      name: keys
+pcbs:
+  keyboard:
+    outlines:
+      main:
+        outline: board
+    footprints:
+      mx:
+        what: mx
+        where: true
+        params:
+          keycaps: true
+          reverse: false
+          hotswap: false
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+      diode:
+        what: diode
+        where: true
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [0, -5]
+      promicro:
+        what: promicro
+        params:
+          orientation: "down"
+        where:
+          ref: matrix_outer_num
+          shift: [-1kx-0.75,-0.5ky]
+          rotate: -90
+
+
